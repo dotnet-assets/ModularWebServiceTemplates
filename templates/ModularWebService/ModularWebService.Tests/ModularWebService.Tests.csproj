@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ModularWebService.ApiClient\ModularWebService.ApiClient.csproj" />
-    <ProjectReference Include="..\ModularWebService.Modularity\ModularWebService.Modularity.csproj" />
     <ProjectReference Include="..\ModularWebService.WebApi\ModularWebService.WebApi.csproj" />
     <ProjectReference Include="..\Modules\Auth\ModularWebService.Auth.Contracts\ModularWebService.Auth.Contracts.csproj" />
     <ProjectReference Include="..\Modules\Auth\ModularWebService.Auth.Tests\ModularWebService.Auth.Tests.csproj" />

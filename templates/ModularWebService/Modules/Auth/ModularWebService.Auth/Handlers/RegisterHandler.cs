@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ModularWebService.Auth.Contracts;
 using ModularWebService.Auth.Model;
 using ModularWebService.Modularity;
@@ -8,9 +9,10 @@ namespace ModularWebService.Auth.Handlers;
 
 internal class RegisterHandler : IRequestHandler<RegisterRequest, UserDto>
 {
-    public RegisterHandler(AuthDbContext dbContext)
+    public RegisterHandler(AuthDbContext dbContext, ILogger<RegisterHandler> logger)
     {
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     public async Task<UserDto> Handle(RegisterRequest request, CancellationToken cancellationToken)
@@ -32,9 +34,11 @@ internal class RegisterHandler : IRequestHandler<RegisterRequest, UserDto>
             x => string.Compare(x.Username, username, StringComparison.OrdinalIgnoreCase) == 0);
         if (isUsernameExists)
         {
-            throw new WebServiceException("Account already exists");
+            _logger.LogInformation($"Register failed: Username '{username}' already exists");
+            throw new AppException("Account already exists");
         }
     }
 
     private readonly AuthDbContext _dbContext;
+    private readonly ILogger<RegisterHandler> _logger;
 }

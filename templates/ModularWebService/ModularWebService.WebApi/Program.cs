@@ -15,6 +15,7 @@ try
     WebApplication app = builder.Build();
     UseDebugServices(app);
     app.MapControllers();
+    app.MapHealthChecks("/health");
     app.UseAuthentication();
     app.UseAuthorization();
     app.Run();
@@ -48,6 +49,7 @@ void AddJwtAuthentication(WebApplicationBuilder builder)
 
 void AddApiServices(WebApplicationBuilder builder)
 {
+    builder.Services.AddHealthChecks();
     builder.Services
         .AddControllers()
         .AddJsonOptions(opts => { opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });

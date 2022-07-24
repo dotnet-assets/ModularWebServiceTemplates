@@ -4,6 +4,7 @@ using System.Text;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using ModularWebService.Auth.Contracts;
 using ModularWebService.Auth.Model;
@@ -13,10 +14,11 @@ namespace ModularWebService.Auth.Handlers;
 
 internal class LoginHandler : IRequestHandler<LoginRequest, UserDto>
 {
-    public LoginHandler(AuthDbContext dbContext, IConfiguration configuration)
+    public LoginHandler(AuthDbContext dbContext, IConfiguration configuration, ILogger<LoginHandler> logger)
     {
         _dbContext = dbContext;
         _configuration = configuration;
+        _logger = logger;
     }
 
     public async Task<UserDto> Handle(LoginRequest request, CancellationToken cancellationToken)
@@ -40,12 +42,14 @@ internal class LoginHandler : IRequestHandler<LoginRequest, UserDto>
         Account? account = await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Username == username);
         if (account is null)
         {
-            throw new WebServiceException("Account not found");
+            _logger.LogInformation($"Login failed: Account with username '{username}' not found");
+            throw new AppException("Login failed");
         }
 
         if (!account.CheckPassword(password))
         {
-            throw new WebServiceException("Incorrect password");
+            _logger.LogInformation($"Login failed: Invalid password for account '{username}'");
+            throw new AppException("Login failed");
         }
 
         return account;
@@ -74,4 +78,5 @@ internal class LoginHandler : IRequestHandler<LoginRequest, UserDto>
 
     private readonly AuthDbContext _dbContext;
     private readonly IConfiguration _configuration;
+    private readonly ILogger<LoginHandler> _logger;
 }
