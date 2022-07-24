@@ -1,16 +1,78 @@
-#pragma warning disable SA1516 // Elements should be separated by blank line
+using System.Text;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using ModularWebService.Auth;
+using ModularWebService.WebApi;
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-WebApplication app = builder.Build();
-if (app.Environment.IsDevelopment())
+try
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+    AddJwtAuthentication(builder);
+    AddApiServices(builder);
+    AddModules(builder);
+
+    WebApplication app = builder.Build();
+    UseDebugServices(app);
+    app.MapControllers();
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.Run();
+}
+catch (Exception ex)
+{
+    Console.WriteLine(ex.Message);
 }
 
-app.MapControllers();
-app.Run();
+void AddJwtAuthentication(WebApplicationBuilder builder)
+{
+    builder.Services.AddAuthentication(auth =>
+        {
+            auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.SaveToken = true;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                ValidateAudience = true,
+                ValidAudience = builder.Configuration["Jwt:Audience"],
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            };
+        });
+}
+
+void AddApiServices(WebApplicationBuilder builder)
+{
+    builder.Services
+        .AddControllers()
+        .AddJsonOptions(opts => { opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerDocumentation();
+}
+
+void AddModules(WebApplicationBuilder builder)
+{
+    builder.Services.AddAuthModule(builder.Configuration);
+}
+
+void UseDebugServices(WebApplication app)
+{
+    if (!app.Environment.IsDevelopment())
+    {
+        return;
+    }
+
+    app.UseSwaggerDocumentation();
+    app.UseCors(x =>
+    {
+        x.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .WithMethods("GET", "POST", "PUT", "DELETE")
+            .AllowCredentials();
+    });
+}

@@ -3,11 +3,12 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
-
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DotNet.Testcontainers" Version="1.6.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.7" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
     <PackageReference Include="MSTest.TestFramework" Version="2.2.10" />
@@ -15,6 +16,15 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ModularWebService.ApiClient\ModularWebService.ApiClient.csproj" />
+    <ProjectReference Include="..\ModularWebService.Modularity\ModularWebService.Modularity.csproj" />
+    <ProjectReference Include="..\ModularWebService.WebApi\ModularWebService.WebApi.csproj" />
+    <ProjectReference Include="..\Modules\Auth\ModularWebService.Auth.Contracts\ModularWebService.Auth.Contracts.csproj" />
+    <ProjectReference Include="..\Modules\Auth\ModularWebService.Auth.Tests\ModularWebService.Auth.Tests.csproj" />
+    <ProjectReference Include="..\Modules\Auth\ModularWebService.Auth\ModularWebService.Auth.csproj" />
   </ItemGroup>
 
 </Project>
