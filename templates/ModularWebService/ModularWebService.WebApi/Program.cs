@@ -75,7 +75,7 @@ void UseDebugServices(WebApplication app)
     {
         x.WithOrigins("http://localhost:4200")
             .AllowAnyHeader()
-            .WithMethods("GET", "POST", "PUT", "DELETE")
+            .AllowAnyMethod()
             .AllowCredentials();
     });
 }
