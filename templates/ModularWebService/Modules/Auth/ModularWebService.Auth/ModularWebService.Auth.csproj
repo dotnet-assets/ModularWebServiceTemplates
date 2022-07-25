@@ -7,21 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="ModularWebService.Auth.Tests"/>
-    <InternalsVisibleTo Include="ModularWebService.Tests"/>
+    <InternalsVisibleTo Include="ModularWebService.Auth.Tests" />
+    <InternalsVisibleTo Include="ModularWebService.Tests" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="10.0.1"/>
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.7"/>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0"/>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.5"/>
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.21.0"/>
+    <PackageReference Include="MediatR" Version="10.0.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.5" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.21.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ModularWebService.Auth.Contracts\ModularWebService.Auth.Contracts.csproj"/>
+    <ProjectReference Include="..\..\..\ModularWebService.Modularity\ModularWebService.Modularity.csproj" />
+    <ProjectReference Include="..\ModularWebService.Auth.Contracts\ModularWebService.Auth.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

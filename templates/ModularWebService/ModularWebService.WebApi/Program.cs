@@ -14,6 +14,7 @@ try
 
     WebApplication app = builder.Build();
     UseDebugServices(app);
+    app.UseExceptionMiddleware();
     app.MapControllers();
     app.MapHealthChecks("/health");
     app.UseAuthentication();
