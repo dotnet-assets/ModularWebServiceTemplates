@@ -10,6 +10,16 @@ namespace ModularWebService.Tests;
 public class AuthTest
 {
     [TestMethod]
+    public async Task FirstRegisteredUserBecomesAdmin()
+    {
+        IApiClient api = await ApplicationFactory.CreateApiClient(needCreateAccounts: false);
+
+        UserDto user = await api.AuthRegister(new RegisterRequest("Mik", "12345asd"));
+
+        Assert.AreEqual(UserRole.Admin.ToString(), user.Role);
+    }
+
+    [TestMethod]
     public async Task UserCanRegisterAndLogin()
     {
         IApiClient api = await ApplicationFactory.CreateApiClient();

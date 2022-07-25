@@ -19,7 +19,10 @@ internal class RegisterHandler : IRequestHandler<RegisterRequest, UserDto>
     {
         await ThrowIfUsernameExists(request.Username, cancellationToken);
 
-        Account account = new(request.Username, UserRole.User, request.Password);
+        bool hasAnyAccount = await _dbContext.Accounts.AnyAsync(cancellationToken: cancellationToken);
+        UserRole role = hasAnyAccount ? UserRole.User : UserRole.Admin;
+        Account account = new(request.Username, role, request.Password);
+
         await _dbContext.Accounts.AddAsync(account, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
 

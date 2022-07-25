@@ -17,15 +17,15 @@ namespace ModularWebService.Tests;
 
 internal class ApplicationFactory : WebApplicationFactory<Program>
 {
-    public static async Task<IApiClient> CreateApiClient()
+    public static async Task<IApiClient> CreateApiClient(bool needCreateAccounts = true)
     {
-        ApplicationFactory applicationFactory = new();
+        ApplicationFactory applicationFactory = new(needCreateAccounts);
         return await applicationFactory.StartAndCreateApiClient();
     }
 
     public static async Task<IApiClient> CreateApiClientAndLogin(string username, string password)
     {
-        ApplicationFactory applicationFactory = new();
+        ApplicationFactory applicationFactory = new(true);
         return await applicationFactory.StartAndCreateApiClient(username, password);
     }
 
@@ -46,8 +46,9 @@ internal class ApplicationFactory : WebApplicationFactory<Program>
         });
     }
 
-    private ApplicationFactory()
+    private ApplicationFactory(bool needCreateAccounts)
     {
+        _needCreateAccounts = needCreateAccounts;
         _dbContainer = BuildDbContainer();
     }
 
@@ -112,11 +113,15 @@ internal class ApplicationFactory : WebApplicationFactory<Program>
         IServiceProvider scopedServices = scope.ServiceProvider;
         AuthDbContext dbContext = scopedServices.GetRequiredService<AuthDbContext>();
 
-        dbContext.Accounts.Add(new Account("admin", UserRole.Admin, "123456"));
-        dbContext.Accounts.Add(new Account("user", UserRole.User, "654321"));
+        if (_needCreateAccounts)
+        {
+            dbContext.Accounts.Add(new Account("admin", UserRole.Admin, "123456"));
+            dbContext.Accounts.Add(new Account("user", UserRole.User, "654321"));
+        }
 
         dbContext.SaveChanges();
     }
 
+    private readonly bool _needCreateAccounts;
     private readonly PostgreSqlTestcontainer _dbContainer;
 }
