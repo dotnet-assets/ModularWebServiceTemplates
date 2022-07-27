@@ -1,0 +1,30 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "Mikhail Doshevsky",
+    "identity": "modular.web.service",
+    "name": "Modular Web Service",
+    "shortName": "modularservice",
+    "classifications": [
+        "Web",
+        "WebAPI",
+        "Service"
+    ],
+    "tags": {
+        "language": "C#",
+        "type": "project"
+    },
+    "sourceName": "ModularWebService",
+    "preferNameDirectory": true,
+    "guids": [
+        "FAE04EC0-301F-11D3-BF4B-00C04F79EFBC",
+        "72F31EED-DD80-4028-8DB1-38B90EEF45DE",
+        "E03AC09C-4F38-4359-992D-2AFAF8212836",
+        "49C96199-3144-4A25-B951-E15C05DD0FD2",
+        "FF031C60-010D-4D0B-9DFC-588A4D5CD2F9",
+        "D392C959-1FB0-4468-8435-296AA8CAC14E",
+        "2D63878F-045D-4AA4-9FF7-07E240F2DF22",
+        "C491C2E2-07D6-4E7A-AFAD-A011ADE4B665",
+        "54708C3E-C1ED-472B-821B-0C385BA1807C",
+        "95570F18-848A-4D18-88A5-3BAAE428DC82"
+    ]
+}
