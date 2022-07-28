@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using MyPetProject.Auth;
+using MyPetProject.SomeModule;
 using MyPetProject.WebApi;
 
 try
@@ -61,6 +62,7 @@ void AddApiServices(WebApplicationBuilder builder)
 void AddModules(WebApplicationBuilder builder)
 {
     builder.Services.AddAuthModule(builder.Configuration);
+    builder.Services.AddSomeModule(builder.Configuration);
 }
 
 void UseDebugServices(WebApplication app)

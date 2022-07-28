@@ -23,6 +23,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Modules\Auth\MyPetProject.Auth\MyPetProject.Auth.csproj" />
+    <ProjectReference Include="..\Modules\SomeModule\MyPetProject.SomeModule.Contracts\MyPetProject.SomeModule.Contracts.csproj" />
+    <ProjectReference Include="..\Modules\SomeModule\MyPetProject.SomeModule\MyPetProject.SomeModule.csproj" />
   </ItemGroup>
 
 </Project>
