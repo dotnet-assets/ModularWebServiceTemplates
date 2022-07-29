@@ -16,10 +16,15 @@
     "sourceName": "WebServiceModule",
     "preferNameDirectory": true,
     "symbols": {
-        "solutionName": {
+        "namespace": {
             "type": "parameter",
             "replaces": "ModularWebService",
             "FileRename": "ModularWebService"
+        },
+        "entityName": {
+            "type": "parameter",
+            "replaces": "Template",
+            "FileRename": "Template"
         }
     }
 }

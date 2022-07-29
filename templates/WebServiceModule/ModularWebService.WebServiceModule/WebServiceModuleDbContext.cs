@@ -10,5 +10,5 @@ internal class WebServiceModuleDbContext : DbContext
     {
     }
 
-    public DbSet<Entity> Entities => Set<Entity>();
+    public DbSet<Template> Templates => Set<Template>();
 }
