@@ -38,7 +38,7 @@ services:
       - 5432:5432
 
   app-service:
-    image: docker.pkg.github.com/<path-to-repo>/<image-name>:latest
+    image: ghcr.io/<path-to-repo>/<image-name>:latest
     container_name: app-service
     restart: always
     ports:
