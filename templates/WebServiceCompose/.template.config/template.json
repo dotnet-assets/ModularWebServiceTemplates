@@ -1,0 +1,17 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "Mikhail Doshevsky",
+    "identity": "web.service.compose",
+    "name": "Docker Compose for Web Service",
+    "shortName": "servicecompose",
+    "classifications": [
+        "Web",
+        "Service",
+        "Docker",
+        "Compose"
+    ],
+    "tags": {
+        "language": "YAML",
+        "type": "item"
+    }
+}
