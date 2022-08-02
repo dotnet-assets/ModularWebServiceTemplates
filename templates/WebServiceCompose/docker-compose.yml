@@ -34,20 +34,18 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - postgres:/data/postgres
-    ports:
-      - 5432:5432
 
   app-service:
     image: ghcr.io/<path-to-repo>/<image-name>:latest
     container_name: app-service
     restart: always
-    ports:
-      - 5000:80
+    expose:
+      - "80"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=Host(`api.<domain>`)"
-      - "traefik.http.routers.backend.entrypoints=websecure"
-      - "traefik.http.routers.backend.tls.certresolver=leresolver"
+      - "traefik.http.routers.appservice.rule=Host(`api.<domain>`)"
+      - "traefik.http.routers.appservice.entrypoints=websecure"
+      - "traefik.http.routers.appservice.tls.certresolver=leresolver"
 
 volumes:
   postgres:
