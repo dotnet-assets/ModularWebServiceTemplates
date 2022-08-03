@@ -13,7 +13,8 @@ public class ApiTest
     [TestMethod]
     public async Task ApiTestAnonymous()
     {
-        IApiClient apiClient = await ApplicationFactory.CreateApiClient();
+        IApiClient apiClient = new ApplicationFactory()
+            .GetClient();
 
         string result = await apiClient.TestAnonymous();
 
@@ -23,7 +24,10 @@ public class ApiTest
     [TestMethod]
     public async Task ApiTestAuthorize()
     {
-        IApiClient apiClient = await ApplicationFactory.CreateApiClientAndLogin("user", "654321");
+        IApiClient apiClient = new ApplicationFactory()
+            .InitDb()
+            .Login("user", "654321")
+            .GetClient();
 
         string result = await apiClient.TestAuthorize();
 
@@ -33,7 +37,10 @@ public class ApiTest
     [TestMethod]
     public async Task ApiTestAdmin()
     {
-        IApiClient apiClient = await ApplicationFactory.CreateApiClientAndLogin("admin", "123456");
+        IApiClient apiClient = new ApplicationFactory()
+            .InitDb()
+            .Login("admin", "123456")
+            .GetClient();
 
         string result = await apiClient.TestAdmin();
 
@@ -43,15 +50,21 @@ public class ApiTest
     [TestMethod]
     public async Task AdminApiMethodsImpossibleUseWithoutAuth()
     {
-        IApiClient apiClient = await ApplicationFactory.CreateApiClient();
+        IApiClient apiClient = new ApplicationFactory()
+            .GetClient();
+
         await AssertFailWithStatusCode(() => apiClient.TestAdmin(), HttpStatusCode.Unauthorized);
     }
 
     [TestMethod]
     public async Task AdminApiMethodsImpossibleUseWithUserRole()
     {
-        IApiClient apiClient = await ApplicationFactory.CreateApiClient();
-        await AssertFailWithStatusCode(() => apiClient.TestAdmin(), HttpStatusCode.Unauthorized);
+        IApiClient apiClient = new ApplicationFactory()
+            .InitDb()
+            .Login("user", "654321")
+            .GetClient();
+
+        await AssertFailWithStatusCode(() => apiClient.TestAdmin(), HttpStatusCode.Forbidden);
     }
 
     private async Task AssertFailWithStatusCode(Func<Task> action, HttpStatusCode expectedStatusCode)

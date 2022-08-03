@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ModularWebService.ApiClient;
-using ModularWebService.Auth;
 using ModularWebService.Auth.Data;
 using ModularWebService.Auth.Model;
 
@@ -18,16 +17,43 @@ namespace ModularWebService.Tests;
 
 internal class ApplicationFactory : WebApplicationFactory<Program>
 {
-    public static async Task<IApiClient> CreateApiClient(bool needCreateAccounts = true)
+    public ApplicationFactory()
     {
-        ApplicationFactory applicationFactory = new(needCreateAccounts);
-        return await applicationFactory.StartAndCreateApiClient();
+        _dbContainer = BuildDbContainer();
+        _needInitDb = false;
+        _username = null;
+        _password = null;
     }
 
-    public static async Task<IApiClient> CreateApiClientAndLogin(string username, string password)
+    public ApplicationFactory InitDb()
     {
-        ApplicationFactory applicationFactory = new(true);
-        return await applicationFactory.StartAndCreateApiClient(username, password);
+        _needInitDb = true;
+        return this;
+    }
+
+    public ApplicationFactory Login(string username, string password)
+    {
+        _username = username;
+        _password = password;
+        return this;
+    }
+
+    public IApiClient GetClient()
+    {
+        _dbContainer.StartAsync().GetAwaiter().GetResult();
+        HttpClient http = CreateClient();
+
+        if (_needInitDb)
+        {
+            InitDbImpl();
+        }
+
+        if (_username is not null && _password is not null)
+        {
+            return ApiClientFactory.CreateWithLogin(http, _username, _password).GetAwaiter().GetResult();
+        }
+
+        return ApiClientFactory.Create(http);
     }
 
     public override async ValueTask DisposeAsync()
@@ -42,34 +68,7 @@ internal class ApplicationFactory : WebApplicationFactory<Program>
         {
             RemoveDbContextDescriptor<AuthDbContext>(services);
             AddTestDbContext<AuthDbContext>(services);
-            EnsureDbCreated(services);
-            InitDb(services);
         });
-    }
-
-    private ApplicationFactory(bool needCreateAccounts)
-    {
-        _needCreateAccounts = needCreateAccounts;
-        _dbContainer = BuildDbContainer();
-    }
-
-    private async Task<IApiClient> StartAndCreateApiClient(string? username = null, string? password = null)
-    {
-        await _dbContainer.StartAsync();
-
-        HttpClient http = CreateClient();
-
-        IApiClient apiClient;
-        if (username != null && password != null)
-        {
-            apiClient = await ApiClientFactory.CreateWithLogin(http, username, password);
-        }
-        else
-        {
-            apiClient = ApiClientFactory.Create(http);
-        }
-
-        return apiClient;
     }
 
     private PostgreSqlTestcontainer BuildDbContainer()
@@ -86,6 +85,18 @@ internal class ApplicationFactory : WebApplicationFactory<Program>
             .Build();
     }
 
+    private void InitDbImpl()
+    {
+        using IServiceScope scope = Services.CreateScope(); // _services.BuildServiceProvider().CreateScope();
+        IServiceProvider scopedServices = scope.ServiceProvider;
+        AuthDbContext dbContext = scopedServices.GetRequiredService<AuthDbContext>();
+
+        dbContext.Accounts.Add(new Account("admin", UserRole.Admin, "123456"));
+        dbContext.Accounts.Add(new Account("user", UserRole.User, "654321"));
+
+        dbContext.SaveChanges();
+    }
+
     private void RemoveDbContextDescriptor<T>(IServiceCollection services)
         where T : DbContext
     {
@@ -99,30 +110,8 @@ internal class ApplicationFactory : WebApplicationFactory<Program>
         services.AddDbContext<T>(options => { options.UseNpgsql(_dbContainer.ConnectionString); });
     }
 
-    private void EnsureDbCreated(IServiceCollection services)
-    {
-        using IServiceScope scope = services.BuildServiceProvider().CreateScope();
-        IServiceProvider scopedServices = scope.ServiceProvider;
-        AuthDbContext dbContext = scopedServices.GetRequiredService<AuthDbContext>();
-        dbContext.Database.EnsureDeleted();
-        dbContext.Database.EnsureCreated();
-    }
-
-    private void InitDb(IServiceCollection services)
-    {
-        using IServiceScope scope = services.BuildServiceProvider().CreateScope();
-        IServiceProvider scopedServices = scope.ServiceProvider;
-        AuthDbContext dbContext = scopedServices.GetRequiredService<AuthDbContext>();
-
-        if (_needCreateAccounts)
-        {
-            dbContext.Accounts.Add(new Account("admin", UserRole.Admin, "123456"));
-            dbContext.Accounts.Add(new Account("user", UserRole.User, "654321"));
-        }
-
-        dbContext.SaveChanges();
-    }
-
-    private readonly bool _needCreateAccounts;
     private readonly PostgreSqlTestcontainer _dbContainer;
+    private bool _needInitDb;
+    private string? _username;
+    private string? _password;
 }

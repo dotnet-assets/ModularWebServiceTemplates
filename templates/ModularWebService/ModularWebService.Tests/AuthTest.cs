@@ -12,7 +12,8 @@ public class AuthTest
     [TestMethod]
     public async Task FirstRegisteredUserBecomesAdmin()
     {
-        IApiClient api = await ApplicationFactory.CreateApiClient(needCreateAccounts: false);
+        IApiClient api = new ApplicationFactory()
+            .GetClient();
 
         UserDto user = await api.AuthRegister(new RegisterRequest("Mik", "12345asd"));
 
@@ -22,7 +23,9 @@ public class AuthTest
     [TestMethod]
     public async Task UserCanRegisterAndLogin()
     {
-        IApiClient api = await ApplicationFactory.CreateApiClient();
+        IApiClient api = new ApplicationFactory()
+            .InitDb()
+            .GetClient();
 
         await api.AuthRegister(new RegisterRequest("new-user", "qwerty"));
         UserDto user = await api.AuthLogin(new LoginRequest("new-user", "qwerty"));
