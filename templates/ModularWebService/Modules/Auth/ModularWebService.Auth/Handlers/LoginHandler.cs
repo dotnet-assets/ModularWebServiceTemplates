@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using ModularWebService.Auth.Contracts;
+using ModularWebService.Auth.Data;
 using ModularWebService.Auth.Model;
 using ModularWebService.Modularity;
 

@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ModularWebService.Auth.Contracts;
+using ModularWebService.Auth.Data;
 using ModularWebService.Auth.Model;
 using ModularWebService.Modularity;
 

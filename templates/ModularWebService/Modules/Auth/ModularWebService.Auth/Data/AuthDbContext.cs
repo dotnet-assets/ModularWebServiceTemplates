@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ModularWebService.Auth.Model;
 
-namespace ModularWebService.Auth;
+namespace ModularWebService.Auth.Data;
 
 internal sealed class AuthDbContext : DbContext
 {

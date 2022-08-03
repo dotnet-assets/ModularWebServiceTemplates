@@ -14,6 +14,7 @@ try
 
     WebApplication app = builder.Build();
     UseDebugServices(app);
+    UseModules(app);
     app.UseExceptionMiddleware();
     app.MapControllers();
     app.MapHealthChecks("/health");
@@ -61,6 +62,11 @@ void AddApiServices(WebApplicationBuilder builder)
 void AddModules(WebApplicationBuilder builder)
 {
     builder.Services.AddAuthModule(builder.Configuration);
+}
+
+void UseModules(IApplicationBuilder app)
+{
+    app.UseAuthModule();
 }
 
 void UseDebugServices(WebApplication app)

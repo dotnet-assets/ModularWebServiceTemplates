@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ModularWebService.ApiClient;
 using ModularWebService.Auth;
+using ModularWebService.Auth.Data;
 using ModularWebService.Auth.Model;
 
 namespace ModularWebService.Tests;
